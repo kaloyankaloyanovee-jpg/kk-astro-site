@@ -1,0 +1,64 @@
+---
+import { getCollection } from 'astro:content';
+const allPosts = await getCollection('blog');
+---
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Блог - KK Contract</title>
+<link rel="stylesheet" href="/styles.css">
+<style>
+.blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:2rem;margin-top:2rem}
+.blog-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:1rem;padding:2rem;text-decoration:none;display:block;transition:all 0.3s}
+.blog-card:hover{background:rgba(255,255,255,0.08);transform:translateY(-5px)}
+.blog-title{color:#fff;font-size:1.5rem;font-weight:700;margin-bottom:0.75rem}
+@media (max-width:768px){.blog-grid{grid-template-columns:1fr;gap:1rem}}
+</style>
+</head>
+<body>
+
+<nav style="padding:1rem 0;border-bottom:1px solid rgba(255,255,255,0.1)">
+<div class="container">
+<a href="/" style="color:#D4AF37;font-weight:700;font-size:1.25rem">KK Contract</a>
+</div>
+</nav>
+
+<section style="padding:3rem 0">
+<div class="container">
+<h1 style="font-size:3rem;font-weight:800;color:#fff;margin-bottom:1rem;text-align:center">Блог</h1>
+<p style="text-align:center;color:#9ca3af;margin-bottom:3rem">Практические гайды по бизнесу в Болгарии</p>
+
+<div class="blog-grid">
+{allPosts.map((post) => {
+  const langEmoji = post.data.lang === 'en' ? '🇬🇧' : post.data.lang === 'ru' ? '🇷🇺' : '🇺🇦';
+  const langName = post.data.lang === 'en' ? 'English' : post.data.lang === 'ru' ? 'Русский' : 'Українська';
+  
+  // Extract slug from entry.id (filename without extension)
+  let slug = post.id;
+  if (slug.includes('/')) {
+    slug = slug.split('/').pop(); // Get filename if there's a path
+  }
+  slug = slug.replace('.md', ''); // Remove .md extension
+  
+  // Remove language prefix if exists (en-, ru-, ua-)
+  if (slug.match(/^[a-z]{2}-/)) {
+    slug = slug.substring(3); // Remove first 3 characters (e.g., "en-")
+  }
+  
+  return (
+    <a href={`/blog/${post.data.lang}/${slug}/`} class="blog-card">
+      <span style="color:#D4AF37;font-size:0.875rem">{langEmoji} {langName}</span>
+      <h2 class="blog-title">{post.data.title}</h2>
+      <p style="color:#9ca3af">{post.data.description}</p>
+    </a>
+  );
+})}
+</div>
+</div>
+</section>
+
+</body>
+</html>

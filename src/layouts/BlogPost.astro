@@ -1,0 +1,58 @@
+---
+const { frontmatter } = Astro.props;
+const { title, description, lang } = frontmatter;
+
+const navLinks = {
+  en: { home: '/en/', blog: '/blog/', blogText: '← Back to Blog' },
+  ru: { home: '/', blog: '/blog/', blogText: '← Назад в блог' },
+  uk: { home: '/ua/', blog: '/blog/', blogText: '← Назад до блогу' }
+};
+
+const nav = navLinks[lang] || navLinks.en;
+---
+
+<!DOCTYPE html>
+<html lang={lang}>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{title} | KK Contract</title>
+  <meta name="description" content={description}>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .article-container{max-width:900px;margin:0 auto;padding:2rem 1rem}
+    .article-content{color:#e5e7eb;line-height:1.8}
+    .article-content h2{color:#D4AF37;font-size:2rem;margin:2rem 0 1rem}
+    .article-content h3{color:#F4E5C2;font-size:1.5rem;margin:1.5rem 0 0.75rem}
+    .article-content p{margin-bottom:1rem}
+    .article-content ul{margin:1rem 0;padding-left:2rem}
+    @media (min-width:768px){.article-container{padding:4rem 1.5rem}}
+  </style>
+</head>
+<body>
+
+<nav style="position:sticky;top:0;z-index:50;background:rgba(10,22,40,0.95);backdrop-filter:blur(15px);border-bottom:1px solid rgba(255,255,255,0.1);padding:1rem 0">
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center">
+    <a href={nav.home} style="color:#D4AF37;font-weight:700;font-size:1.25rem;text-decoration:none">KK Contract</a>
+    <a href={nav.blog} style="color:#D4AF37;text-decoration:none">{nav.blogText}</a>
+  </div>
+</nav>
+
+<article class="article-container">
+  <header style="margin-bottom:2rem">
+    <h1 style="font-size:2rem;font-weight:800;color:#fff;line-height:1.2">
+      {title}
+    </h1>
+  </header>
+
+  <div class="article-content">
+    <slot />
+  </div>
+</article>
+
+<footer style="padding:2rem 0;text-align:center;border-top:1px solid rgba(255,255,255,0.1)">
+  <p style="color:#9ca3af">© 2026 KK Contract Consulting</p>
+</footer>
+
+</body>
+</html>
